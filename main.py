@@ -1,9 +1,13 @@
+import shutil
+import zipfile
 from certificate import Blockchain
 import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 import cv2 as cv
 import ipfsApi
+import os
+import glob
 
 # 1. as sidebar menu
 
@@ -14,7 +18,7 @@ selected = option_menu("Main Menu", ["Home", 'Check'],
 
 if selected == "Home":
     uploaded_file = st.file_uploader("Choose a file")
-    if uploaded_file:
+    if uploaded_file is not None:
         api = ipfsApi.Client(host='https://ipfs.infura.io', port=5001)
         block = Blockchain()
         block.mine_block()
@@ -31,7 +35,6 @@ if selected == "Home":
 
         df =  pd.read_excel(uploaded_file, engine='openpyxl')
         names = df['Name'].tolist()
-        print(names)
 
 
         for i in names:
@@ -57,13 +60,36 @@ if selected == "Home":
 
             certi_path = output_path + certi_name + '.png'
 
-            status = cv.imwrite(f'ouput/{certi_name}.png',img)
+            status = cv.imwrite(f'output/{certi_name}.png',img)
             print("Image written to file-system : ",status)
-            res = api.add(f'ouput/{certi_name}.png')
+            res = api.add(f'output/{certi_name}.png')
             block.add_transaction(res)
             block.mine_block()
             
             
-        st.write(block.get_chain())
-        cv.destroyAllWindows()
+        data = block.get_chain()
+        table_values = []
+        for i in data['chain']:
+            if i['transactions'] is not None:
+                try:
+                   val = i['transactions'][1][0]
+                   tx_hash = i['transactions'][0]
+                   table_values.append({'name': val['Name'], 'ipfs_hash': val['Hash'],"tx_hash": tx_hash})
+                except:
+                    pass
+        st.write(table_values)
+        shutil.make_archive('output/', 'zip', 'output/')
+        with open("output.zip", "rb") as fp:
+            btn = st.download_button(
+                label="Download ZIP",
+                data=fp,
+                file_name="output.zip",
+                mime="application/zip"
+            )
 
+
+        dir = 'output/'
+        for f in os.listdir(dir):
+            os.remove(os.path.join(dir, f))
+        
+        
