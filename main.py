@@ -63,7 +63,7 @@ if selected == "Home":
             cv.putText(img, proof, (190, 680), font, 1, font_color, 2)
 
             certi_path = output_path + certi_name + '.png'
-            st.write(os.path.isdir('output'))
+
             status = cv.imwrite(f'output/{certi_name}.png', img)
             res = api.add(f'output/{certi_name}.png')
             block.add_transaction(res)
