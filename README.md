@@ -1,4 +1,4 @@
-# Certificate_Generation_And_Validation
+# Certificates_Generation_And_Validation
 
 Sometimes organisations issue certificates for events they organize. However, the certificates can easily be forged as there are no authentication criteria. This application is a prototype for a certificate generator and validator.
 
