@@ -18,6 +18,7 @@ selected = option_menu("Certificate Validation", ["Home", 'Check'],
                        icons=['house', 'gear'], menu_icon="cast", default_index=1, orientation="horizontal")
 
 if selected == "Home":
+    st.title("Upload XLSX with list of names")
     uploaded_file = st.file_uploader("Choose a file")
     create_db()
 
@@ -85,7 +86,7 @@ if selected == "Home":
                     result = dba.add_entry(dynamic_model)
                 except Exception as e:
                     pass
-
+        st.subheader("Generated_Certificates_Table")
         st.dataframe(pd.DataFrame(table_values))
         shutil.make_archive('output/', 'zip', 'output/')
         with open("output.zip", "rb") as fp:
