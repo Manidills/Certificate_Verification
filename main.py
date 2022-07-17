@@ -65,8 +65,6 @@ if selected == "Home":
             certi_path = output_path + certi_name + '.png'
             st.write(os.path.isdir('output'))
             status = cv.imwrite(f'output/{certi_name}.png', img)
-            st.write("DONE")
-            st.write("Image written to file-system : ", status)
             res = api.add(f'output/{certi_name}.png')
             block.add_transaction(res)
             block.mine_block()
