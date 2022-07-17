@@ -1,4 +1,4 @@
-ipfsapi
+ipfs-api
 opencv-python-headless
 openpyxl==3.0.10
 pandas==1.4.0
