@@ -43,16 +43,18 @@ COMPUTER VISON is used on automating the ceritificate generation, it create the 
 https://manidills-certificate-verification-main-5ewbc9.streamlitapp.com/
 
 
-1.HOME
+1.HOME ( STORE & RETRIVE FROM IPFS )
 
     Organization should upload there xlsx file, that contain's list of name's. Then you will get the dataframe that shows IPFS HASH, NAME and TX_HASH also with download button to get certificates with participants names. ( STORE DATA TO IPFS AND RETRIVE ). It should shared with participants via mail or drive.
     
-2.CHECK
+  ![Screenshot](https://i.ibb.co/19gwKWr/valid-1.png)
+    
+2.CHECK (RETRIVE IPFS )
 
     If the participants or organization want to valid or download the specific certificate, by entering the name || date to retrive the certificate from IPFS and also with IPFS URL.
     
     
-![alt text](https://i.ibb.co/j58kn2J/valid-2.png)
+  ![Screenshot](https://i.ibb.co/j58kn2J/valid-2.png)
     
     
 
