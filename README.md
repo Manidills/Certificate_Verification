@@ -52,7 +52,7 @@ https://manidills-certificate-verification-main-5ewbc9.streamlitapp.com/
     If the participants or organization want to valid or download the specific certificate, by entering the name || date to retrive the certificate from IPFS and also with IPFS URL.
     
     
-![alt text]("https://i.ibb.co/j58kn2J/valid-2.png")
+![alt text](https://i.ibb.co/j58kn2J/valid-2.png)
     
     
 
