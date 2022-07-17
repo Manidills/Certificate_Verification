@@ -25,6 +25,11 @@ if selected == "Home":
         api = ipfsApi.Client(host='https://ipfs.infura.io', port=5001)
         block = Blockchain()
         block.mine_block()
+        current_directory = os.getcwd()
+        final_directory = os.path.join(current_directory, r'output')
+        if not os.path.exists(final_directory):
+            os.makedirs(final_directory)
+
 
         template_path = 'template_certificate.png'
         output_path = 'output/'
