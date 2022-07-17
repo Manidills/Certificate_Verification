@@ -14,7 +14,7 @@ import glob
 
 # 1. as sidebar menu
 
-selected = option_menu("Main Menu", ["Home", 'Check'],
+selected = option_menu("Certificate Validation", ["Home", 'Check'],
                        icons=['house', 'gear'], menu_icon="cast", default_index=1, orientation="horizontal")
 
 if selected == "Home":
