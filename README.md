@@ -28,6 +28,7 @@ COMPUTER VISON is used on automating the ceritificate generation, it create the 
 
     Store the data -  
     api = ipfsApi.Client(host='https://ipfs.infura.io', port=5001)
+    
     api.add(data)
     
     Retrive via gateway url -
