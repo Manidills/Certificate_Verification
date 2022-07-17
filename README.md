@@ -45,7 +45,8 @@ https://manidills-certificate-verification-main-5ewbc9.streamlitapp.com/
 
 
 1.HOME ( STORE & RETRIVE FROM IPFS )
-
+    
+    [xlsx file should follow the structure like test.xlsx]
     Organization should upload there xlsx file, that contain's list of name's. Then you will get the dataframe that shows IPFS HASH, NAME and TX_HASH also with download button to get certificates with participants names. ( STORE DATA TO IPFS AND RETRIVE ). It should shared with participants via mail or drive.
     
   ![Screenshot](https://i.ibb.co/19gwKWr/valid-1.png)
