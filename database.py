@@ -81,3 +81,63 @@ class TableDba:
             return err
         finally:
             s.close()
+
+
+class Account(Base):
+    __tablename__ = 'accounts'
+    id = Column(Integer, primary_key=True)  # Unique id auto increment
+    user_name = Column(Text, nullable=False)  # Name for the resource
+    password = Column(Text, nullable=False)  # Password for the resource
+
+
+class AccountDba:
+    def __init__(self, model=Account):
+        self.model = model
+        engine = create_engine(DB_URL, poolclass=NullPool)
+        self.session = sessionmaker()
+        self.session.configure(bind=engine)
+        Base.metadata.create_all(engine)
+
+    def get_by_user_name(self, user_name):
+        s = self.session()
+        result = []
+        try:
+            q = s.query(self.model).filter_by(user_name=user_name).first()
+            if q:
+                result.append(q.__dict__)
+            return result
+        except SQLAlchemyError as e:
+            s.rollback()
+            print('DB Error while get by username : {err}'.format(err=str(e)))
+            return result
+        except Exception as e:
+            s.rollback()
+            print('Error while get by username : {err}'.format(err=str(e)))
+            return result
+        finally:
+            s.close()
+
+    def add_default_account(self):
+        s = self.session()
+        data = Account()
+        data.user_name = 'Admin'
+        data.password = 'superuser'
+        try:
+            q = s.query(Account).filter_by(user_name=data.user_name).first()
+            if q:
+                return
+            else:
+                s.add(data)
+                s.commit()
+                # s.refresh()
+                return
+        except Exception as e:
+            s.rollback()
+            print('Error while add default account:{}'.format(str(e)))
+            return
+        finally:
+            s.close()
+
+
+
+
