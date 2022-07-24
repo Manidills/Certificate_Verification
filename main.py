@@ -1,6 +1,6 @@
 import shutil
 # import wget
-from database import TableDba, create_db, TableModel, AccountDba, Account
+from database import TableDba, create_db, TableModel
 import zipfile
 from certificate import Blockchain
 import streamlit as st
