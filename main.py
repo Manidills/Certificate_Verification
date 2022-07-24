@@ -111,9 +111,9 @@ def process_file():
 selected = option_menu("Certificate Validation", ["Home", 'Check'],
                        icons=['house', 'gear'], menu_icon="cast", default_index=1, orientation="horizontal")
 create_db()
-acc_dba = AccountDba()
-print('default account')
-acc_dba.add_default_account()
+# acc_dba = AccountDba()
+# print('default account')
+# acc_dba.add_default_account()
 
 
 def authentication():
