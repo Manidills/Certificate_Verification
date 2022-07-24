@@ -233,7 +233,7 @@ if selected == "Check":
     name = st.text_input('Enter the Name')
     record_date = st.date_input('Select Date')
     wallet_address = None
-    if st.checkbox('NTF Port'):
+    if st.checkbox('MINT AS NFT'):
         wallet_address = st.text_area('Wallet Address')
 
     if st.button('search'):
@@ -253,7 +253,9 @@ if selected == "Check":
                     "mint_to_address": wallet_address
                 }
                 req = requests.get(ipfs_url, stream = True)
-                os.mkdir('tmp')
+                if os.path.exists('tmp/'):
+                    shutil.rmtree('tmp/')
+                os.makedirs('tmp/')
                 file = 'tmp/{}.png'.format(record[0].get('ipfs_hash'))
                 with open(file, 'wb') as f:
                     shutil.copyfileobj(req.raw, f)
