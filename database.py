@@ -102,7 +102,9 @@ class AccountDba:
         s = self.session()
         result = []
         try:
-            q = s.query(self.model).filter_by(user_name=user_name).first()
+            print('in try',user_name)
+            q = s.query(Account).filter_by(user_name=user_name).first()
+            print('query',q)
             if q:
                 result.append(q.__dict__)
             return result

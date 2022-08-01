@@ -1,18 +1,16 @@
 import shutil
-# import wget
-from database import TableDba, create_db, TableModel
-import zipfile
+from database import TableDba, create_db, TableModel, AccountDba, Account
 from certificate import Blockchain
 import streamlit as st
 from streamlit_option_menu import option_menu
+from ipfs_api import IPFSApi
+# import streamlit_authenticator as stauth
 import pandas as pd
 import cv2 as cv
 import ipfsApi
 import os
-import json
-import requests
 
-authentication_status = True
+authentication_status = False
 
 
 def process_file():
@@ -43,7 +41,6 @@ def process_file():
         names = df['Name'].tolist()
 
         for i in names:
-            print('in for')
             proof = block.get_previous_hash()
             print(proof)
             certi_name = i
@@ -111,36 +108,57 @@ def process_file():
 selected = option_menu("Certificate Validation", ["Home", 'Check'],
                        icons=['house', 'gear'], menu_icon="cast", default_index=1, orientation="horizontal")
 create_db()
-# acc_dba = AccountDba()
+acc_dba = AccountDba()
 # print('default account')
-# acc_dba.add_default_account()
+acc_dba.add_default_account()
+ipfs = IPFSApi()
 
 
 def authentication():
-    authentication_status = False
-    st.sidebar.subheader("Login Section")
-    username = st.sidebar.text_input("User Name")
-    password = st.sidebar.text_input("Password", type='password')
-    if st.sidebar.button('Login'):
-        print('test')
-        res = acc_dba.get_by_user_name(username)
+    # t = st.empty()
+    # login_form = t.form('Login')
+    # login_form.subheader('Login')
+    # input_username = login_form.text_input('Username')
+    # input_password = login_form.text_input('Password', type='password')
+    # if login_form.form_submit_button('Login'):
+    #     # global authentication_status
+    #     print('us', input_username)
+    #     res = acc_dba.get_by_user_name(input_username)
+    #     if res:
+    #         if res[0].get('password') == input_password:
+    #             authentication_status = True
+    #         else:
+    #             authentication_status = False
+    print('hhhhhh')
+    res = acc_dba.get_by_user_name('Admin')
+    print('res', res[0]['user_name'])
+    username = []
+    password = []
+    names = ['Admin']
+    username.append(res[0]['user_name'])
+    password.append(res[0]['password'])
+    login_form = st.form('Login')
+    login_form.subheader('Login')
+    input_username = login_form.text_input('Username')
+    input_password = login_form.text_input('Password', type='password')
+    if login_form.form_submit_button('Login'):
+        global authentication_status
+        print('us', input_username)
+        res = acc_dba.get_by_user_name(input_username)
         if res:
-            if res[0].get('password') == password:
+            if res[0].get('password') == input_password:
                 authentication_status = True
             else:
                 authentication_status = False
-    return authentication_status
 
 
 if selected == "Home":
     # authentication_status = authentication()
     if authentication_status:
-        # process_file()
         st.title("Upload XLSX with list of names")
         uploaded_file = st.file_uploader("Choose a file")
 
         if uploaded_file is not None:
-            api = ipfsApi.Client(host='https://ipfs.infura.io', port=5001)
             block = Blockchain()
             block.mine_block()
             current_directory = os.getcwd()
@@ -183,7 +201,7 @@ if selected == "Home":
                 certi_path = output_path + certi_name + '.png'
 
                 status = cv.imwrite(f'output/{certi_name}.png', img)
-                res = api.add(f'output/{certi_name}.png')
+                res = ipfs.ipfs_add(certi_path)
                 block.add_transaction(res)
                 block.mine_block()
 
@@ -222,7 +240,7 @@ if selected == "Home":
             dba = TableDba(model=dynamic_model)
             ret = dba.delete_all()
             st.write('Database clear now')
-    elif not authentication_status:
+    elif authentication_status == False:
         st.error('Username / password is incorrect')
     elif authentication_status is None:
         st.warning('Please enter your username and password')
@@ -246,54 +264,8 @@ if selected == "Check":
             st.image(ipfs_url)
             st.write(ipfs_url)
             if wallet_address:
-                query_params = {
-                    "chain": "rinkeby",
-                    "name": "NFT_Name",
-                    "description": "NFT_Description",
-                    "mint_to_address": wallet_address
-                }
-                req = requests.get(ipfs_url, stream = True)
-                if os.path.exists('tmp/'):
-                    shutil.rmtree('tmp/')
-                os.makedirs('tmp/')
-                file = 'tmp/{}.png'.format(record[0].get('ipfs_hash'))
-                with open(file, 'wb') as f:
-                    shutil.copyfileobj(req.raw, f)
-
-                response = requests.post(
-                    "https://api.nftport.xyz/v0/mints/easy/files",
-                    headers={"Authorization": "f6ce3372-a928-4947-8f50-87649f60cee2"},
-                    params=query_params,
-                    files={"file": file}
-                )
-                if response.status_code == 200:
-                    res_data = json.loads(response.content.decode())
-                    res_data['file_url'] = ipfs_url
-                    res_data['description'] = 'Certificate metadata verification'
-                    res_data['name'] = 'MetaData'
-
-                    response_meta = requests.post(
-                        "https://api.nftport.xyz/v0/metadata",
-                        headers={"Authorization": "f6ce3372-a928-4947-8f50-87649f60cee2"},
-                        data=json.dumps(res_data)
-                    )
-                    if response_meta.status_code == 200:
-                        meta_url = json.loads(response_meta.content.decode())\
-                            .get('metadata_uri')
-                        output_data = {
-                            'contract_address': res_data.get('contract_address'),
-                            'transaction_hash': res_data.get('transaction_hash'),
-                            'transaction_external_url': res_data.get('transaction_external_url'),
-                            'mint_to_address': res_data.get('mint_to_address'),
-                            'ipfs_url': ipfs_url,
-                            'metadata_url': meta_url
-                        }
-                        st.subheader('NTF and IPFS Paths')
-                        st.json(output_data)
-                    else:
-                        st.error('Failed to upload metadata to IPFS')
-                else:
-                    st.error('Failed to Minting with file')
-
+                res_data = ipfs.nft_port_minting(record, wallet_address, ipfs_url)
+                if res_data:
+                    ipfs.upload_metadata_to_ipfs(res_data, ipfs_url)
         else:
             st.write('No record found')
