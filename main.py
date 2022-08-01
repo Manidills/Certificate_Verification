@@ -10,7 +10,7 @@ import cv2 as cv
 import ipfsApi
 import os
 
-authentication_status = False
+authentication_status = True
 
 
 def process_file():
