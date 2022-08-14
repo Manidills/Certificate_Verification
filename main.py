@@ -285,7 +285,7 @@ if selected == "Check":
                         meta_d = requests.get(url=f'https://{meta_cid}.ipfs.nftstorage.link/')
                         temp = json.loads(meta_d.content.decode('utf-8'))
                         new_dict = {key: val for key,
-                                                 val in t.items() if
+                                                 val in temp.items() if
                                     key not in ['name', 'description', 'file_url', 'response']}
                         st.json(new_dict)
 
