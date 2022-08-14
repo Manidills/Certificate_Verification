@@ -283,7 +283,11 @@ if selected == "Check":
                         st.markdown("#")
                         st.write(f'https://{meta_cid}.ipfs.nftstorage.link/')
                         meta_d = requests.get(url=f'https://{meta_cid}.ipfs.nftstorage.link/')
-                        st.write(meta_d.text)
+                        temp = json.loads(meta_d.content.decode('utf-8'))
+                        new_dict = {key: val for key,
+                                                 val in t.items() if
+                                    key not in ['name', 'description', 'file_url', 'response']}
+                        st.json(new_dict)
 
         else:
             st.write('No record found')
