@@ -11,6 +11,7 @@ from ipfs_api import IPFSApi
 import pandas as pd
 import cv2 as cv
 import ipfsApi
+import ipfsapi
 import os
 import json
 
@@ -22,7 +23,7 @@ def process_file():
     uploaded_file = st.file_uploader("Choose a file")
 
     if uploaded_file is not None:
-        api = ipfsApi.Client(host='https://ipfs.infura.io', port=5001)
+        api = ipfsapi.Client(host='https://ipfs.infura.io', port=5001)
         block = Blockchain()
         block.mine_block()
         current_directory = os.getcwd()
@@ -64,7 +65,7 @@ def process_file():
             certi_path = output_path + certi_name + '.png'
 
             status = cv.imwrite(f'output/{certi_name}.png', img)
-            res = api.add(f'output/{certi_name}.png')
+            res = ipfs.ipfs_add(f'output/{certi_name}.png')
             block.add_transaction(res)
             block.mine_block()
 
@@ -198,18 +199,22 @@ if selected == "Home":
                 certi_path = output_path + certi_name + '.png'
 
                 status = cv.imwrite(f'output/{certi_name}.png', img)
-                res = ipfs.ipfs_add(certi_path)
+                print(certi_path)
+                res = ipfs.nft_storage_store(certi_path)
+                res = {'Hash': res['value']['cid'], 'Name': f'output/{certi_name}.png'}
                 block.add_transaction(res)
                 block.mine_block()
 
             data = block.get_chain()
             table_values = []
             for i in data['chain']:
-                if i['transactions'] is not None:
+                if i['transactions']:
+                    print(i)
                     try:
-                        val = i['transactions'][1][0]
+                        val = i['transactions'][1]
+                        print(val)
                         tx_hash = i['transactions'][0]
-                        table_values.append({'name': val['Name'], 'ipfs_hash': val['Hash'], "tx_hash": tx_hash})
+                        table_values.append({'name': val['Name'], 'ipfs_cid': val['Hash'], "tx_hash": tx_hash})
                         dynamic_model = TableModel()
                         dba = TableDba(model=dynamic_model)
                         dynamic_model.name = val['Name'].split('/')[-1].split('.')[0]

@@ -6,6 +6,7 @@ from nft_storage.model.upload_response import UploadResponse
 from nft_storage.model.unauthorized_error_response import UnauthorizedErrorResponse
 from nft_storage.model.forbidden_error_response import ForbiddenErrorResponse
 import ipfsApi
+import ipfsapi
 import os
 import json
 import requests
@@ -18,7 +19,7 @@ class IPFSApi:
         pass
 
     def ipfs_add(self, certi_path):
-        api = ipfsApi.Client(host='https://ipfs.infura.io', port=5001)
+        api = ipfsapi.Client(host='https://ipfs.infura.io', port=5001)
         res = api.add(certi_path)
         return res
 
