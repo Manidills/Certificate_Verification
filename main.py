@@ -281,7 +281,7 @@ if selected == "Check":
                         meta_cid = retrive_data['value']['cid']
                         st.markdown("#")
                         st.write(f'https://{meta_cid}.ipfs.nftstorage.link/')
-                        meta_d = requests.get(url='https://{meta_cid}.ipfs.nftstorage.link/')
+                        meta_d = requests.get(url=f'https://{meta_cid}.ipfs.nftstorage.link/')
                         st.write(meta_d.text)
 
         else:
