@@ -11,7 +11,6 @@ from ipfs_api import IPFSApi
 import pandas as pd
 import cv2 as cv
 import ipfsApi
-import ipfsapi
 import os
 import json
 
@@ -45,7 +44,6 @@ def process_file():
 
         for i in names:
             proof = block.get_previous_hash()
-            print(proof)
             certi_name = i
             block.add_transaction(proof)
 
@@ -209,10 +207,8 @@ if selected == "Home":
             table_values = []
             for i in data['chain']:
                 if i['transactions']:
-                    print(i)
                     try:
                         val = i['transactions'][1]
-                        print(val)
                         tx_hash = i['transactions'][0]
                         table_values.append({'name': val['Name'], 'ipfs_cid': val['Hash'], "tx_hash": tx_hash})
                         dynamic_model = TableModel()

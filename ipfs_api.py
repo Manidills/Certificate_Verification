@@ -6,7 +6,6 @@ from nft_storage.model.upload_response import UploadResponse
 from nft_storage.model.unauthorized_error_response import UnauthorizedErrorResponse
 from nft_storage.model.forbidden_error_response import ForbiddenErrorResponse
 import ipfsApi
-import ipfsapi
 import os
 import json
 import requests
