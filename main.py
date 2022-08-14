@@ -1,4 +1,7 @@
 import shutil
+
+import requests
+
 from database import TableDba, create_db, TableModel, AccountDba, Account
 from certificate import Blockchain
 import streamlit as st
@@ -9,6 +12,7 @@ import pandas as pd
 import cv2 as cv
 import ipfsApi
 import os
+import json
 
 authentication_status = True
 
@@ -16,11 +20,9 @@ authentication_status = True
 def process_file():
     st.title("Upload XLSX with list of names")
     uploaded_file = st.file_uploader("Choose a file")
-    print('upload file', uploaded_file)
 
     if uploaded_file is not None:
         api = ipfsApi.Client(host='https://ipfs.infura.io', port=5001)
-        print('api', api)
         block = Blockchain()
         block.mine_block()
         current_directory = os.getcwd()
@@ -129,9 +131,7 @@ def authentication():
     #             authentication_status = True
     #         else:
     #             authentication_status = False
-    print('hhhhhh')
     res = acc_dba.get_by_user_name('Admin')
-    print('res', res[0]['user_name'])
     username = []
     password = []
     names = ['Admin']
@@ -143,7 +143,6 @@ def authentication():
     input_password = login_form.text_input('Password', type='password')
     if login_form.form_submit_button('Login'):
         global authentication_status
-        print('us', input_username)
         res = acc_dba.get_by_user_name(input_username)
         if res:
             if res[0].get('password') == input_password:
@@ -179,9 +178,7 @@ if selected == "Home":
             names = df['Name'].tolist()
 
             for i in names:
-                print('in for')
                 proof = block.get_previous_hash()
-                print(proof)
                 certi_name = i
                 block.add_transaction(proof)
 
@@ -260,12 +257,32 @@ if selected == "Check":
         ret = dba.get(name=name, record_date=record_date)
         record = ret.get('data')
         if len(record):
-            ipfs_url = 'https://gateway.ipfs.io/ipfs/{}'.format(record[0].get('ipfs_hash'))
-            st.image(ipfs_url)
-            st.write(ipfs_url)
+            ipfs_url = ipfs.ipfs_get(record)
             if wallet_address:
                 res_data = ipfs.nft_port_minting(record, wallet_address, ipfs_url)
                 if res_data:
-                    ipfs.upload_metadata_to_ipfs(res_data, ipfs_url)
+                    file = 'tmp/{}.png'.format(record[0].get('ipfs_hash'))
+                    store_nft = ipfs.nft_storage_store(file)
+                    st.subheader("Retrive Stored image Data from NFT Storage")
+                    st.write(store_nft)
+                    st.markdown("#")
+                    st.subheader("Minted Image")
+                    image_cid = store_nft['value']['cid']
+                    st.write(f'https://{image_cid}.ipfs.nftstorage.link/')
+                    if store_nft:
+                        meta_file = 'tmp/temp_{}.json'.format(image_cid)
+                        with open(meta_file,'w+') as f:
+                            json.dump(res_data,f)
+                        nft_meta = ipfs.nft_storage_store(meta_file)
+                        st.markdown("#")
+                        st.subheader("Retrive Stored Meta Data from NFT Storage")
+                        retrive_data = ipfs.get_nft_storage(nft_meta['value']['cid'])
+                        st.success(retrive_data)
+                        meta_cid = retrive_data['value']['cid']
+                        st.markdown("#")
+                        st.write(f'https://{meta_cid}.ipfs.nftstorage.link/')
+                        meta_d = requests.get(url='https://{meta_cid}.ipfs.nftstorage.link/')
+                        st.write(meta_d.text)
+
         else:
             st.write('No record found')

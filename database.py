@@ -35,7 +35,6 @@ class TableDba:
         result = {'data': []}
         try:
             q = s.query(TableModel).filter_by(name=name).filter_by(record_date=record_date).all()
-            print('query', q)
             for r in q:
                 res = {'id': r.id,
                        'name': r.name,
@@ -102,9 +101,7 @@ class AccountDba:
         s = self.session()
         result = []
         try:
-            print('in try',user_name)
             q = s.query(Account).filter_by(user_name=user_name).first()
-            print('query',q)
             if q:
                 result.append(q.__dict__)
             return result
