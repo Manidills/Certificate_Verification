@@ -1,3 +1,7 @@
 [theme]
-base="dark"
-primaryColor="white"
+base="light"
+primaryColor="black"
+backgroundColor="black"
+secondaryBackgroundColor="#151818"
+textColor="white"
+font="serif"
