@@ -15,6 +15,7 @@ The certificate can be accessed using the link https://gateway.ipfs.io/ipfs/(you
 1. Blockchain
 2. IPFS
 3. Computer Vision
+4. NFT
 
 BLOCKCHAIN used for validation purpose that verifies each certificate with a unique hash (tx_hash).
 
@@ -33,6 +34,14 @@ COMPUTER VISON is used on automating the certificate generation, it creates the 
     
     Retrieve via gateway url -
     https://gateway.ipfs.io/ipfs/(your ipfs hash)
+    
+    NFTPORT -
+    
+    Mint NFT, Store it to IPFS
+    
+    NFTSTORAGE:
+    
+    NFT and NFT Metadata stored on NFTSTORAGE
     
 2. OPENCV & PIL
 3. SQLITE DATABASE ( To save each ipfs_hash, tx_hash and name of the file )
@@ -53,7 +62,7 @@ https://manidills-certificate-verification-main-5ewbc9.streamlitapp.com/
     
 2.CHECK (RETRIVE IPFS )
 
-    If the participants or organization want to valid or download the specific certificate, by entering the name || date to retrive the certificate from IPFS and also with IPFS URL.
+    If the participants or organization want to valid or download the specific certificate, by entering the name || date to retrive the certificate from IPFS and also mit as a NFT.
     
     
   ![Screenshot](https://i.ibb.co/j58kn2J/valid-2.png)
